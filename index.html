@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>組手審判クイズ</title>
+
+<style>
+body{font-family:sans-serif;text-align:center;background:#f4f6f8;padding:20px;}
+.card{background:white;max-width:700px;margin:auto;padding:20px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,.2);}
+button{font-size:22px;margin:10px;padding:12px 25px;border:none;border-radius:8px;cursor:pointer;}
+.mar{background:#ff6666;color:white;}
+.batu{background:#6699ff;color:white;}
+.sankaku{background:#ffaa33;color:white;}
+.next{background:#444;color:white;}
+.hidden{display:none;}
+
+/* ===== スマホ最適化（ここを追加）===== */
+@media (max-width:600px){
+
+body{
+    padding:10px;
+}
+
+.card{
+    width:95%;
+    padding:15px;
+}
+
+button{
+    width:90%;
+    font-size:26px;
+    padding:18px;
+    margin:8px 0;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>組手審判 200問トレーニング</h2>
+
+<div id="progress"></div>
+<hr>
+<div id="question"></div>
+
+<div id="buttons">
+<button class="mar" onclick="answer('○')">〇</button>
+<button class="batu" onclick="answer('×')">×</button>
+<button class="sankaku" onclick="answer('△')">△</button>
+</div>
+
+<div id="result"></div>
+
+<button id="nextBtn" class="next hidden" onclick="nextQuestion()">次へ</button>
+</div>
+
+<script src="questions.js"></script>
+
+<script>
+
+let queue=[...Array(questions.length).keys()];
+let wrong=[];
+let index=0;
+
+function show(){
+if(queue.length===0){
+alert("🎉 全問〇達成！");
+location.reload();
+return;
+}
+
+let q=questions[queue[index]];
+question.innerText=q.q;
+progress.innerText=`${index+1} / ${queue.length}`;
+result.innerHTML="";
+buttons.classList.remove("hidden");
+nextBtn.classList.add("hidden");
+}
+
+function answer(ans){
+let q=questions[queue[index]];
+let correct=q.a===ans;
+
+result.innerHTML=
+(correct?"✅ 正解":"❌ 不正解")+
+"<br><br><b>根拠：</b>"+q.e;
+
+if(!correct) wrong.push(queue[index]);
+
+buttons.classList.add("hidden");
+nextBtn.classList.remove("hidden");
+}
+
+function nextQuestion(){
+index++;
+
+if(index>=queue.length){
+queue=[...wrong];
+wrong=[];
+index=0;
+alert("×・△のみ再出題");
+}
+
+show();
+}
+
+show();
+
+</script>
+</body>
+</html>
